@@ -1,0 +1,51 @@
+
+
+/**
+ * main.c
+ */
+
+#include "ping.h"
+#include "Timer.h"
+#include "lcd.h"
+
+#define _PART1 0
+#define _PART2 1
+#define _PART3 0
+#define _PART4 0
+
+#if _PART1
+int main(void)
+{
+    timer_init();
+    ping_init();
+    while(1) {
+        ping_read();
+        timer_waitMillis(1000);
+    }
+
+	return 0;
+}
+#endif
+
+#if _PART2
+
+volatile int risingTimer = 0;
+volatile int fallingTimer = 0;
+volatile int pulseWidth = 0;
+volatile int edgeType = 0; // 0 = rising 1 = falling
+volatile int pingFlag = 0; //New reading
+
+int main(void) {
+    init_counter();
+    ping_init();
+    timer_init();
+    while(1) {
+        ping_read();
+        lcd_printf("%d", pulseWidth);
+        timer_waitMillis(1000);
+        lcd_clear();
+
+    }
+
+
+}

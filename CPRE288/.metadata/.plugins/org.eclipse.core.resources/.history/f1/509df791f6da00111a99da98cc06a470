@@ -1,0 +1,158 @@
+/*
+ * scan.c
+ *
+ *  Created on: Oct 13, 2026
+ *      Author: alex2168
+ */
+
+#include "scan.h"
+#include "timer.h"
+#include "uart_extra_help.h"
+#include "clean_data.h"
+#include "count_objects.h"
+#include "adc.h"
+#include "ping.h"
+#include <string.h>
+#include <math.h>
+#include <stdio.h>
+
+// Used in clean data function
+int sensor_data_array[] = {
+    150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150,
+    30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30,
+    30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30,
+    150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150,
+    160, 170, 170, 170, 170, 170, 170, 170, 170, 170, 170, 170, 170, 170, 170,
+    190, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60
+};
+
+
+
+
+
+int scan(float *smallest_distance, char mode) {
+    int i, j, z;
+    int smallest_angle;
+
+
+
+    char heading[] = "Angle(Degrees)    Distance(cm)\r\n";
+
+
+
+    for(j = 0; heading[j] != '\0'; j++) {
+        uart_sendChar(heading[j]);
+    }
+
+
+    // Make sure ping has enough time to get to 0 degrees
+    turn_to(0);
+    timer_waitMillis(1000);
+
+
+    for (i = 0; i <= 180; i+= 2) {
+        timer_waitMillis(10);
+        turn_to(i);
+        int distance = scan_IR(scan, i);
+
+
+
+        sensor_data_array[i/2] = distance;
+
+        char line[20] = "";
+        snprintf(line, sizeof(line), "%d\t\t\t%d\r\n", i, distance);
+        fprintf(fptr, "%d\t\t\t%d\r\n", i, distance);
+        for(j = 0; line[j] != '\0'; j++) {
+            uart_sendChar(line[j]);
+        }
+
+    }
+
+
+
+    clean_data(sensor_data_array);
+    //if(mode == 'M')
+    if(mode == 'M') {
+        for(i = 0; i <= 180; i += 2) {
+            char line[20] = "";
+            snprintf(line, sizeof(line), "%d\t\t\t%d\r\n", i, sensor_data_array[i/2]);
+            for(j = 0; line[j] != '\0'; j++) {
+                uart_sendChar(line[j]);
+            }
+        }
+    }
+
+    smallest_angle = get_num_objects(sensor_data_array, smallest_distance); // Will mess up parsing for the python script
+
+
+
+
+
+    return 0;
+
+
+
+
+}
+
+int scan_IR(int angle) { // Returns the average distance of 5 scans
+    int z;
+    float IR_scaled;
+    float accumulator = 0;
+    float values[5];
+    float value, average;
+
+
+    for (z = 0;z < 5; z++) {
+
+        turn_to(angle);
+
+        value = adc_read();
+        if (value < 1460)
+        {
+            IR_scaled = 0.00006067*pow(value, 2)-.21196*value+209.041 - 1;
+        }
+        else {
+            IR_scaled = (112.8276*pow(M_E, (-0.00108*value))+4.831) - 1;
+        }
+        accumulator += IR_scaled;
+        values[z] = IR_scaled;
+    }
+
+    float middle_values[3];
+    int biggest = values[0];
+    int smallest = values[0];
+
+    for(z = 1; z < 5; z++) {
+        if(values[z] > biggest) {
+            biggest = values[z];
+        }
+        if(values[z] < smallest) {
+            smallest = values[z];
+        }
+    }
+    int j = 0;
+    for(z = 0; z < 5; z++) {
+        if(values[z] != biggest || values[z] != smallest) {
+            middle_values[j] = values[z];
+            j++;
+        }
+    }
+
+    //  average = accumulator/5; // averaging mech (needed for lab)
+
+    average = (middle_values[0] + middle_values[1] +  middle_values[2]) / 3;
+    if(average < 10) { // average when between 9 and 12
+        average += 2;
+    }
+    if(average > 37) {
+        average -= 1;
+    }
+
+
+    return (int)average;
+
+
+
+
+}

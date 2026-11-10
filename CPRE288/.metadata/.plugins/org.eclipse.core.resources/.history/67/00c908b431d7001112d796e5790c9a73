@@ -1,0 +1,28 @@
+/*
+ * counter.h
+ *
+ *  Created on: Oct 27, 2026
+ *      Author: alex2168
+ */
+
+#ifndef COUNTER_H_
+#define COUNTER_H_
+#include <inc/tm4c123gh6pm.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include "ping.h"
+
+extern volatile int risingTimer;
+extern volatile int fallingTimer;
+extern volatile int pulseWidth;
+extern volatile int edgeType; // 0 = rising 1 = falling
+extern volatile int pingFlag; //New reading
+
+
+// Initialize Timer 3B to be a 16 bit countdown timer + 8 bit prescaler
+void init_counter(void);
+
+
+void interruptHandler(void);
+
+#endif /* COUNTER_H_ */

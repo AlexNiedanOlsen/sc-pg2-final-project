@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;lab_5/count_object.h&apos; to &apos;count_objects.h&apos;" description="Rename resource &apos;count_object.h&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="count_object.h" name="count_objects.h" stamp="1790375734358" updateReferences="true"/>
+</session>

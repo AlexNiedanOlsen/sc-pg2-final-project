@@ -1,0 +1,124 @@
+
+
+/**
+ * main.c
+ */
+
+#include <string.h>
+#include <math.h>
+#include <stdio.h>
+#include "servo.h"
+#include "lcd.h"
+#include "Timer.h"
+#include "adc.h"
+#include "button.h"
+#include "clean_data.h"
+#include "count_objects.h"
+#include "counter.h"
+#include "movement.h"
+#include "open_interface.h"
+#include "ping.h"
+#include "scan.h"
+#include "uart_extra_help.h"
+
+#define _PART3 1
+#define _PART4 0
+
+volatile  char uart_data;
+volatile  char flag;
+int isFirstScan = 1;
+
+int main(void)
+{
+    timer_init();
+    lcd_init();
+    servo_init();
+    //servo_adjust_match();
+
+    /*
+    int angle = 0;
+    turn_to(angle);
+    timer_waitMillis(1000);
+    while(angle <= 180) {
+        turn_to(angle);
+        angle += 2;
+        timer_waitMillis(10);
+    }
+    */
+
+#if _PART3
+    int smallest_angle;
+    float smallest_distance;
+    smallest_distance = 1000000;
+    uart_init(115200);
+    servo_init();
+    adc_init();
+    ping_init();
+
+    oi_t *sensor_data = oi_alloc();
+    oi_init(sensor_data);
+
+    char byte = uart_receive_nonBlocking();
+    char mode = 'M';
+
+    while(1) {
+        while(mode == 'M') { // manual mode
+            byte = uart_receive_nonBlocking();
+            if(byte != 0) {
+                if(byte == 'W') {
+                    move_forward(sensor_data, .05);
+                }
+                else if(byte == 'A') {
+                    turn_left_degrees(sensor_data, 15);
+                }
+                else if(byte == 'S') {
+                    move_back_distance(sensor_data, .05);
+                }
+                else if(byte == 'D') {
+                    turn_right_degrees(sensor_data, 15);
+                }
+                else if(byte == 'F') {
+                    oi_free(sensor_data);
+                } else if(byte == 'C') { // Scan
+                    scan(NULL, mode);
+                }*else {
+                    oi_setWheels(0,0);
+                }
+            }
+        }
+        while(mode == 'T') { // autonomous move
+            // turn to object
+            smallest_angle = scan(&smallest_distance, mode);
+            isFirstScan = 0;
+
+            if(smallest_distance < 10) {
+                return 0;
+            }
+
+            // turn to object
+            if(smallest_angle < 90) {
+                turn_right_degrees(sensor_data, 90 - smallest_angle);
+            } else if(smallest_angle > 90) {
+                turn_left_degrees(sensor_data, smallest_angle - 90);
+            } else { // don't do anything
+
+            }
+            // move half way to object
+            move_forward(sensor_data, ((smallest_distance / 100) / 3)); // convert to meters
+            // scan
+
+            timer_waitMillis(1000);
+            byte =  uart_receive_nonBlocking();
+
+
+        }
+
+    }
+    oi_free(sensor_data);
+
+#endif
+
+#if _PART4
+#endif
+	return 0;
+}

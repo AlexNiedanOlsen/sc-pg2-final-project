@@ -1,0 +1,71 @@
+/*
+ * servo.c
+ *
+ *  Created on: Nov 3, 2026
+ *      Author: alex2168
+ */
+#include "servo.h"
+
+
+void servo_init() {
+
+    //TIMER1_TBPR_R
+    //TIMER1_TBPMR_R
+    // Configure pin 5B
+    SYSCTL_RCGCGPIO_R |= 0b10; // Enable clock for port B
+    GPIO_PORTB_AFSEL_R |= 0b100000;
+    GPIO_PORTB_PCTL_R = 0x700000; // bit 5 = 7
+    GPIO_PORTB_DEN_R |= 0b100000; // Enable digital output for pin 5
+    GPIO_PORTB_DIR_R |= 0b100000; // Make pin 5 output
+    GPIO_PORTB_AMSEL_R &= ~0b100000; // Disable analog mode for pin 5
+
+    SYSCTL_RCGCTIMER_R |= 0x02; // Enable t1
+    TIMER1_CTL_R &= ~0x100; // Disable timer while configuring it
+    TIMER1_CFG_R= 0x4; // 16 bit mode
+    TIMER1_TBMR_R |= 0b1010; // Configure to be periodic PWM
+    TIMER1_TBMR_R &= ~0b0100;
+    TIMER1_TBILR_R = 0xE200; // Start count at 320,000
+    TIMER1_TBPR_R = 0x4;
+    TIMER1_TBMATCHR_R = 0x8440; // Pulse at 304,000
+    TIMER1_TBPMR_R = 0x4;
+    TIMER1_CTL_R |= 0x100; // Enable timer
+
+}
+
+void servo_adjust_match() {
+    button_init();
+    int one_degree = 178;
+    int button = button_getButton();
+    int match_value = TIMER1_TBMATCHR_R |  (TIMER1_TBPMR_R << 16);
+    int direction = -1; // -1 = counter clock wise + degreess      +1 = clockwise - degrees
+
+    while(1) {
+        lcd_printf("%d", match_value); // Print the current match value
+        if(button == 0) {} // If no buttons are pressed don't do anything
+        else if(button == 1) { // Move 1 degree to the right
+            match_value += direction * one_degree; // move one degree
+        } else if(button == 2) {
+            match_value += direction * (one_degree * 5); // Move five degrees
+        } else if(button == 3) { // Change directions
+            direction *= -1;
+        } else { // If button equals 4
+            if(direction == 1) { // Move 0
+                match_value = 312000;
+            } else { // Move 180
+                match_value = 280000;
+            }
+        }
+
+        TIMER1_TBMATCHR_R = match_value & 0xFFFF;
+        TIMER1_TBPMR_R = (match_value & 0xF0000) >> 16;
+    }
+
+
+}
+
+
+void turn_to(int degree) {
+
+}
+
+

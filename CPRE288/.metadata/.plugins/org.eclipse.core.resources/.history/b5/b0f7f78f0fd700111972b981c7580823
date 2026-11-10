@@ -1,0 +1,46 @@
+/*
+ * counter.c
+ *
+ *  Created on: Oct 27, 2026
+ *      Author: alex2168
+ */
+
+#include "counter.h"
+
+int risingTimer = 0;
+int fallingTimer = 0;
+
+void init_counter() {
+    SYSCTL_RCGCTIMER_R |= 0x08; //enable t3
+
+    TIMER3_CFG_R= 0x4; //16 bit mode
+    TIMER3_TBMR_R = 0x07; //capture edgetime countdown
+    TIMER3_CTL_R |= 0xC00; //both edges
+
+    TIMER3_TBILR_R = 0xFFFF; // Lower 16 bits
+    TIMER3_TBPR_R = 0xFF; // Upper 8 bits (prescale added)
+
+    TIMER3_ICR_R |= 0x400; // Clear interupt 3B
+    TIMER3_IMR_R |= 0x400;// Unmask timer 3B interupt
+    NVIC_EN1_R |= 0x10; // maybe?  Enable 3B in NVIC
+
+}
+
+void get_pulse_width() {
+
+}
+
+void interruptHandler() {
+TIMER3_ICR_R |= 0x400;
+
+if (edgeType == 0) {
+    risingTimer = TIMER3_TBR_R;
+    edgeType = 1;
+}
+else if (edgeType == 1){
+    fallingTimer = TIMER3_TBR_R;
+    pulseWidth = risingTimer - fallingTimer;
+    pingFlag = 1;
+    TIMER3_CTL_R &= ~0x100;
+}
+}

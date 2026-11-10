@@ -1,0 +1,21 @@
+
+**** Build of configuration Debug for project lab_4 ****
+
+"C:\\ti\\ccs1271\\ccs\\utils\\bin\\gmake" -k -j 20 all -O 
+ 
+Building file: "../main.c"
+Invoking: Arm Compiler
+"C:/ti/ccs1271/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 -me --include_path="U:/CPRE288/lab_4" --include_path="C:/ti/TivaWare_C_Series-2.2.0.295" --include_path="C:/ti/ccs1271/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include" --define=ccs="ccs" --define=PART_TM4C123GH6PM -g --gcc --diag_warning=225 --diag_wrap=off --display_error_number --abi=eabi --preproc_with_compile --preproc_dependency="main.d_raw"  "../main.c"
+Finished building: "../main.c"
+ 
+makefile:139: recipe for target 'all' failed
+gmake: *** [all] Error 130
+
+**** Build of configuration Debug for project lab_4 ****
+
+!CommandLauncher.error.commandCanceled!
+Error: Program "C:/ti/ccs1271/ccs/utils/bin/gmake" is not found in PATH
+
+PATH=[C:/ti/ccs1271/ccs/eclipse/jre/bin/server;C:/ti/ccs1271/ccs/eclipse/jre/bin;C:\Program Files\Python314\Scripts\;C:\Program Files\Python314\;C:\Program Files\Common Files\Oracle\Java\javapath;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Git\cmd;C:\Program Files\MATLAB\R2026a\runtime\win64;C:\Program Files\MATLAB\R2026a\bin;C:\Program Files\PuTTY\;C:\Program Files\Microsoft VS Code\bin;C:\Program Files\dotnet\;C:\Users\alex2168\AppData\Local\Microsoft\WindowsApps;;C:\ti\ccs1271\ccs\eclipse;]
+
+**** Build Finished ****

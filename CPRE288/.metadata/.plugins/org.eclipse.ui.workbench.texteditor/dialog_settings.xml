@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
+		<item key="selection" value="cyBOT"/>
+		<item key="wrap" value="true"/>
+		<item key="casesensitive" value="false"/>
+		<item key="wholeword" value="false"/>
+		<item key="incremental" value="false"/>
+		<item key="isRegEx" value="false"/>
+		<list key="findhistory">
+			<item value="cybot"/>
+			<item value="bool"/>
+			<item value="cyBot_getByte_blocking"/>
+			<item value="cyBot_sendByte"/>
+			<item value="scan.IR_raw_val"/>
+			<item value="first"/>
+			<item value="Adc"/>
+			<item value="adcss"/>
+			<item value="adcssF"/>
+			<item value="adcff"/>
+			<item value="0x4003800"/>
+			<item value="0x4003.800"/>
+			<item value="adc"/>
+			<item value="adcactss"/>
+			<item value="RCGCADC"/>
+		</list>
+		<list key="replacehistory">
+			<item value="uart_receive"/>
+			<item value="uart_sendChar"/>
+			<item value="value"/>
+			<item value="uart_sendChar_nonBlocking"/>
+			<item value=""/>
+			<item value="smallest_angle"/>
+			<item value="smallest_position"/>
+			<item value="50"/>
+			<item value="90"/>
+			<item value="my_data"/>
+		</list>
+	</section>
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
+		<item key="DIALOG_X_ORIGIN" value="1187"/>
+		<item key="DIALOG_Y_ORIGIN" value="280"/>
+		<item key="DIALOG_WIDTH" value="322"/>
+		<item key="DIALOG_HEIGHT" value="391"/>
+		<item key="DIALOG_FONT_NAME" value="1|Segoe UI|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|5|0|Segoe UI"/>
+	</section>
+</section>

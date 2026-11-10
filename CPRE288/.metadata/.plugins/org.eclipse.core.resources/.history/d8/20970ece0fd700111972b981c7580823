@@ -1,0 +1,28 @@
+/*
+ * ping.h
+ *
+ *  Created on: Oct 27, 2026
+ *      Author: alex2168
+ */
+
+
+#include <stdio.h>
+#include <stdint.h>
+#include <string.h>
+#include <inc/tm4c123gh6pm.h>
+#include "timer.h"
+#include "lcd.h"
+
+#ifndef PING_H_
+#define PING_H_
+
+
+
+
+
+void ping_init(void);
+int ping_read(void);
+
+
+#endif
+

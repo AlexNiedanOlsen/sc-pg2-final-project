@@ -1,0 +1,44 @@
+
+**** Build of configuration Debug for project lab_7 ****
+
+"C:\\ti\\ccs1271\\ccs\\utils\\bin\\gmake" -k -j 20 all -O 
+ 
+Building file: "../scan.c"
+Invoking: Arm Compiler
+"C:/ti/ccs1271/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 -me --include_path="U:/CPRE288/lab_7" --include_path="C:/ti/TivaWare_C_Series-2.2.0.295" --include_path="C:/ti/ccs1271/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include" --define=ccs="ccs" --define=PART_TM4C123GH6PM -g --gcc --diag_warning=225 --diag_wrap=off --display_error_number --abi=eabi --preproc_with_compile --preproc_dependency="scan.d_raw"  "../scan.c"
+"../scan.c", line 42: warning #118-D: non-void function "scan" should return a value
+"../scan.c", line 78: warning #225-D: function "uart_sendChar_nonBlocking" declared implicitly
+"../scan.c", line 91: warning #112-D: statement is unreachable
+"../scan.c", line 33: warning #179-D: variable "z" was declared but never referenced
+"../scan.c", line 100: warning #552-D: variable "values" was set but never used
+Finished building: "../scan.c"
+ 
+Building file: "../count_objects.c"
+Invoking: Arm Compiler
+"C:/ti/ccs1271/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 -me --include_path="U:/CPRE288/lab_7" --include_path="C:/ti/TivaWare_C_Series-2.2.0.295" --include_path="C:/ti/ccs1271/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include" --define=ccs="ccs" --define=PART_TM4C123GH6PM -g --gcc --diag_warning=225 --diag_wrap=off --display_error_number --abi=eabi --preproc_with_compile --preproc_dependency="count_objects.d_raw"  "../count_objects.c"
+"../count_objects.c", line 103: warning #225-D: function "uart_sendChar_nonBlocking" declared implicitly
+Finished building: "../count_objects.c"
+ 
+Building target: "lab_7.out"
+Invoking: Arm Linker
+"C:/ti/ccs1271/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 -me --define=ccs="ccs" --define=PART_TM4C123GH6PM -g --gcc --diag_warning=225 --diag_wrap=off --display_error_number --abi=eabi -z -m"lab_7.map" --heap_size=1024 --stack_size=2048 -i"C:/ti/ccs1271/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/lib" -i"C:/ti/ccs1271/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="lab_7_linkInfo.xml" --rom_model -o "lab_7.out" "./Lab7_template_extra_help.obj" "./Timer.obj" "./clean_data.obj" "./count_objects.obj" "./lcd.obj" "./movement.obj" "./open_interface.obj" "./scan.obj" "./tm4c123gh6pm_startup_ccs.obj" "./uart_extra_help.obj" "../libcybotScan.lib" "../tm4c123gh6pm.cmd"  -llibc.a -l"C:/ti/TivaWare_C_Series-2.2.0.295/driverlib/ccs/Debug/driverlib.lib" 
+<Linking>
+error #10056: symbol "scan" redefined: first defined in "./Lab7_template_extra_help.obj"; redefined in "./scan.obj"
+error #10056: symbol "sensor_data_array" redefined: first defined in "./Lab7_template_extra_help.obj"; redefined in "./scan.obj"
+ 
+ undefined                 first referenced   
+  symbol                       in file        
+ ---------                 ----------------   
+ isFirstScan               ./count_objects.obj
+ uart_sendChar_nonBlocking ./count_objects.obj
+ 
+error #10234-D: unresolved symbols remain
+error #10010: errors encountered during linking; "lab_7.out" not built
+ 
+>> Compilation failure
+makefile:146: recipe for target 'lab_7.out' failed
+gmake[1]: *** [lab_7.out] Error 1
+gmake: *** [all] Error 2
+makefile:142: recipe for target 'all' failed
+
+**** Build Finished ****

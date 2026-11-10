@@ -1,0 +1,94 @@
+/*
+ * ping.c
+ *
+ *  Created on: Oct 27, 2026
+ *      Author: alex2168
+ */
+
+#include <stdint.h>
+#include "ping.h"
+#include "counter.h"
+#include "timer.h"
+
+
+
+
+ void ping_init(void) { // Ping is located on PB3
+
+    // Enable GPIO PB3 for part 1 of lab 10
+    SYSCTL_RCGCGPIO_R |= 0b10; // Enable clock for port B
+    GPIO_PORTB_AFSEL_R &= ~0b1000; // Do not enable alternate function for pin 3
+    GPIO_PORTB_DEN_R |= 0b1000; // Enable digital output for pin 3
+    GPIO_PORTB_DIR_R |= 0b1000; // Make pin 3 output
+    GPIO_PORTB_AMSEL_R &= ~0b1000; // Disable analog mode for pin 3
+
+    
+
+
+
+
+ }
+
+ int ping_read_helper(void) {
+    // Tout= 2->5uS
+    // Tholdoff = 750uS
+    // Set PB3 high for 2->5uS and then bring it low
+   
+   pingFlag = 0;
+   edgeType = 0;
+   risingTimer = 0;
+   fallingTimer = 0;
+   pulseWidth = 0;
+
+
+   GPIO_PORTB_AFSEL_R &= ~0b1000; // clear previous alternate function
+   GPIO_PORTB_DATA_R &= ~0b1000; // Make sure pin 3 is set low
+   GPIO_PORTB_DIR_R |= 0b1000; // Make pin 3 output
+   GPIO_PORTB_DATA_R |= 0b1000; // Set pin three high
+   timer_waitMicros(5); // Wait 3 micro seconds as specified in datasheet
+   GPIO_PORTB_DATA_R &= ~0b1000; // Set pin three low
+   GPIO_PORTB_DIR_R &= ~0b1000; // Make pin 3 input
+    
+   GPIO_PORTB_AFSEL_R |= 0x08; // Enable alt fuc
+   GPIO_PORTB_PCTL_R = (GPIO_PORTB_PCTL_R & 0xFFFF0FFF) | 0x00007000; // Choose timer 3B
+   
+   
+   TIMER3_ICR_R = 0x400;
+   TIMER3_CTL_R |= 0x100; //Enable T3B
+
+   int result = -1; // return -1 if it never returns
+
+   int wait_time;
+   for(wait_time = 0; wait_time < 30000; wait_time++) { // Wait 30mS for echo to come back
+      if(pingFlag) {
+         result = (int)(pulseWidth & 0x00FFFFFF);
+         break;
+      }
+      timer_waitMicros(1);
+   }
+
+   // Make PB3 gpio again
+   TIMER3_CTL_R &= ~0x100;
+   GPIO_PORTB_AFSEL_R &= ~0b1000;
+   GPIO_PORTB_DIR_R |= 0b1000;
+   GPIO_PORTB_DATA_R &= ~0b1000;
+
+   
+
+    return result; // Return -1 if it goes above 30000
+
+
+
+
+
+
+
+ }
+
+ int ping_read() {
+     pulseWidth= ping_read_helper();
+     while(error_flag) {
+         pulseWidth= ping_read_helper();
+     }
+     return pulseWidth;
+ }

@@ -1,0 +1,50 @@
+/*
+ * counter.c
+ *
+ *  Created on: Oct 27, 2026
+ *      Author: alex2168
+ */
+
+#include "counter.h"
+
+volatile int risingTimer = 0;
+volatile int fallingTimer = 0;
+volatile int pulseWidth = 0;
+volatile int edgeType = 0;  // 0 = expecting rising edge, 1 = expecting falling edge
+volatile int pingFlag = 0;  // Set to 1 after both echo edges are captured
+
+void init_counter() {
+    SYSCTL_RCGCTIMER_R |= 0x08; // Enable t3
+    TIMER3_CTL_R &= ~0x100; // Disable timer while configuring it
+
+    TIMER3_CFG_R= 0x4; // 16 bit mode
+    TIMER3_TBMR_R = 0x07; // Capture edgetime countdown
+    TIMER3_CTL_R |= 0xC00; // Both edges
+
+    TIMER3_TBILR_R = 0xFFFF; // Lower 16 bits
+    TIMER3_TBPR_R = 0xFF; // Upper 8 bits 
+
+    TIMER3_ICR_R |= 0x400; // Clear interupt 3B
+    TIMER3_IMR_R |= 0x400;// Unmask timer 3B interupt
+    NVIC_EN1_R |= 0x10; // maybe?  Enable 3B in NVIC
+
+}
+
+
+void interruptHandler() {
+    TIMER3_ICR_R |= 0x400; // Let another edge capture interrupt 
+
+    uint32_t capturedValue = (((uint32_t)TIMER3_TBPS_R & 0xFF) << 16) | ((uint32_t)TIMER3_TBR_R & 0xFFFF); // Prescaler + Lower 16 bits
+
+if (edgeType == 0) { // If it's the first interrupts
+    risingTimer = capturedValue; 
+    edgeType = 1; 
+}
+else if (edgeType == 1){ // If it's the second interrupt
+    fallingTimer = capturedValue; 
+    pulseWidth = (risingTimer - fallingTimer) & 0x00FFFFFF; // Only want the first 24 bits
+    pingFlag = 1;
+    edgeType = 0;
+    TIMER3_CTL_R &= ~0x100; // Stop until next capture
+}
+}

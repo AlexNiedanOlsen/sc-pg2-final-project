@@ -1,0 +1,26 @@
+
+
+/**
+ * main.c
+ */
+
+#include "servo.h"
+#include "lcd.h"
+#include "Timer.h"
+
+int main(void)
+{
+    timer_init();
+    lcd_init();
+    servo_init();
+    //servo_adjust_match();
+
+    int angle = 0;
+    turn_to(angle);
+    while(angle <= 180) {
+        turn_to(angle);
+        angle += 2;
+        timer_waitMillis(50);
+    }
+	return 0;
+}

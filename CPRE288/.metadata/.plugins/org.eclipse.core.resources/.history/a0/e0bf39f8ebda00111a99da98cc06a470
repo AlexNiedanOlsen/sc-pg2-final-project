@@ -1,0 +1,14 @@
+
+
+/**
+ * main.c
+ */
+
+#include "servo.h"
+
+int main(void)
+{
+    servo_init();
+    servo_adjust_match();
+	return 0;
+}

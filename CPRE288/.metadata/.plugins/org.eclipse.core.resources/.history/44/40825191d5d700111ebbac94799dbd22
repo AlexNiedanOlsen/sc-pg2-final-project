@@ -1,0 +1,16 @@
+/*
+ * servo.h
+ *
+ *  Created on: Nov 3, 2026
+ *      Author: alex2168
+ */
+
+#ifndef SERVO_H_
+#define SERVO_H_
+
+// turn to the position specified by the user
+void turn_to(int degree);
+
+
+
+#endif /* SERVO_H_ */

@@ -1,0 +1,53 @@
+
+
+/**
+ * main.c
+ */
+
+#include "ping.h"
+#include "Timer.h"
+#include "lcd.h"
+
+#define _PART1 0
+#define _PART2 1
+#define _PART3 0
+#define _PART4 0
+
+#if _PART1
+int main(void)
+{
+    timer_init();
+    ping_init();
+    while(1) {
+        ping_read();
+        timer_waitMillis(1000);
+    }
+
+	return 0;
+}
+#endif
+
+#if _PART2
+
+
+
+int main(void) {
+    timer_init();
+    lcd_init();
+    ping_init();
+    IntMasterEnable();
+    while(1) {
+    int pulseWidth = ping_read();
+    lcd_clear();
+
+    if (pulseWidth >= 0) {
+        lcd_printf("Width: %d", pulseWidth);
+    } else {
+        lcd_printf("No echo");
+    }
+
+    timer_waitMillis(1000);
+    }
+
+}
+#endif
